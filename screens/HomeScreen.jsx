@@ -1,5 +1,5 @@
 import { auth } from '../firebase'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native'
 import { StyleSheet, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
@@ -8,8 +8,25 @@ import {PrimaryColor} from '../constants/PrimaryColor'
 import { ImageBackground } from 'react-native'
 import BloodPosts from '../components/BloodPosts'
 import {db} from '../firebase'
-
+import {Spinner} from 'native-base'
 const HomeScreen = ({navigation}) => {
+
+    const logout = () =>{
+        auth.signOut();
+        navigation.replace("Login")
+    }
+
+    useLayoutEffect(() =>{
+        navigation.setOptions({
+            headerTintColor: 'white',
+            headerRight: () =>(
+<TouchableOpacity onPress={logout} activeOpacity={0.8} style={{marginRight:10}}><AntDesign name="logout" size={24} color="white" style={{fontWeight:'bold'}}  /></TouchableOpacity>
+            )
+        })
+    },[])
+
+
+
     const [data,setData] = useState([])
     useEffect(() =>{
        const unsubscribe = db.collection('donations').onSnapshot(snapshot => {
@@ -24,16 +41,12 @@ const HomeScreen = ({navigation}) => {
 
     },[])
 
-    const logout = () =>{
-        auth.signOut();
-        navigation.replace("Login")
-    }
+   
 
-    console.log(data)
     return (
         
             <SafeAreaView style={{flex:1}}>
-           <View style={{flex:1}}>
+           <View style={{flex:1,}}>
            <ImageBackground style={{width:'100%', height:250, }} imageStyle={{borderBottomRightRadius: 65}} source={{uri:"https://images.unsplash.com/photo-1536856136534-bb679c52a9aa?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8Ymxvb2QlMjBkb25hdGlvbnxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"}}>
             <View style={styles.DarkOverlay}></View>
             <View style={{flex:1, justifyContent:'center'}}>
@@ -56,7 +69,7 @@ const HomeScreen = ({navigation}) => {
            </View>
            
            <View style={{flex:1.7,}}>
-           <TouchableOpacity onPress={logout} activeOpacity={0.8} style={{marginLeft:7, marginTop:12}}><AntDesign name="logout" size={24} color="red" style={{fontWeight:'bold'}}  /></TouchableOpacity>
+           
            <ScrollView>
                <Text style={{color:'#181818', textAlign:'center' ,marginTop:10, fontSize:26, fontWeight:'bold'}}>Blood Donations</Text>
                 <View style={{alignItems:'center', marginVertical:3}} >
@@ -71,6 +84,7 @@ const HomeScreen = ({navigation}) => {
                                 return (
                                     <BloodPosts
                                     key={i}
+                                    email={data.email}
                                     name={data.name}
                                     number={data.number}
                                     city={data.city}
@@ -80,7 +94,9 @@ const HomeScreen = ({navigation}) => {
                             })
                         
                       ) :(
-                          <Text>Loading ..</Text>
+                          <View style={{alignItems:'center', justifyContent:'space-between'}}> 
+                              <Spinner color='red' style={{marginTop:'30%', fontSize:40}} />
+                          </View>
                       )
                   }
 

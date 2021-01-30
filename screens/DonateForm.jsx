@@ -1,13 +1,29 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native'
 import { StyleSheet, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import {PrimaryColor} from '../constants/PrimaryColor'
-import {Button, Input} from 'react-native-elements'
+import { Input} from 'react-native-elements'
 import { Fontisto } from '@expo/vector-icons';
 import {db, auth} from '../firebase'
+import { AntDesign } from '@expo/vector-icons';
+import {  Picker } from "native-base";
+
 
 const DonateForm = ({navigation}) => {
+    const logout = () =>{
+        auth.signOut();
+        navigation.replace("Login")
+    }
+
+    useLayoutEffect(() =>{
+        navigation.setOptions({
+            headerTintColor: 'white',
+            headerRight: () =>(
+<TouchableOpacity onPress={logout} activeOpacity={0.8} style={{marginRight:10}}><AntDesign name="logout" size={24} color="white" style={{fontWeight:'bold'}}  /></TouchableOpacity>
+            )
+        })
+    },[])
 
     const [name,setName] = useState("")
     const [number,setNumber] = useState("")
@@ -16,23 +32,23 @@ const DonateForm = ({navigation}) => {
     const [city,setCity] = useState("")
 
 
-    const onSubmit = () =>{
-        db.collection("donations").add({
-            name: name,
-            number: number,
-            email: email,
-            group: group,
-            city:city,
-        })
 
-        navigation.replace("Home")
+    const onSubmit = async () =>{
+        if(name,number,email,group,city == ''){
+            alert("Please fill all required fields..")
+        }
+        else{
+           await db.collection("donations").add({
+                name: name,
+                number: number,
+                email: email,
+                group: group,
+                city:city,
+            })
+    
+            navigation.replace("Home")
+        }
     }
-
-    useEffect(() =>{
-
-    },[])
-
-
 
     return (
        <ScrollView>
@@ -42,18 +58,39 @@ const DonateForm = ({navigation}) => {
                     <Text style={styles.headingTxt}>Donate your Blood Now</Text>
                     <Text style={styles.subHeadingTxt}>A drop of blood can make all the difference and let us not waste any drops.</Text>
                     </View>
-                    <Fontisto name="blood-drop" size={64} color="red" style={{marginTop:10, opacity:0.9}} />
+                    <Fontisto name="blood-drop" size={60} color="red" style={{marginTop:10, opacity:0.9}} />
                 </View>
                 <View style={{flex:1}}>
                     <View style={styles.inputContainer}>
                     <Input style={styles.inputElements} placeholder="Full Name" autoFocus type="text" value={name} onChangeText={(e) => setName(e)} />
                     <Input style={styles.inputElements} placeholder="Contact Number" s autoFocus type="text" value={number} onChangeText={(e) => setNumber(e)} />
                     <Input style={styles.inputElements} placeholder="Email" s autoFocus type="text" value={email} onChangeText={(e) => setEmail(e)} />
-                    <Input style={styles.inputElements} placeholder="Blood Group" s autoFocus type="text" value={group} onChangeText={(e) => setGroup(e)} />
-                    <Input style={styles.inputElements} placeholder="City" s autoFocus type="text" value={city} onChangeText={(e) => setCity(e)} />
+                    {/* <Input style={styles.inputElements} placeholder="Blood Group" s autoFocus type="text" value={group} onChangeText={(e) => setGroup(e)} /> */}
                    
+                    <Input style={styles.inputElements} placeholder="City" s autoFocus type="text" value={city} onChangeText={(e) => setCity(e)} />
+                    <View style={{borderBottomColor: '#ccc', borderBottomWidth:2, width:'80%', marginBottom:10}}>
+                   <Picker
+                    mode="dropdown"
+                    styles={styles.pickerContent}
+                    placeholder="Select Your Blood Group"
+                    placeholderStyle={{ color: "#ccc"}}
+                    placeholderIconColor={"#000"}
+                    selectedValue={group}
+                    onValueChange={(e) => setGroup(e)}
+                >
+                    <Picker.Item label="Choose Blood Group" value="Null" />
+                    <Picker.Item label="A+" value="A+" />
+                    <Picker.Item label="A-" value="A-" />
+                    <Picker.Item label="B+" value="B+" />
+                    <Picker.Item label="B-" value="B-" />
+                    <Picker.Item label="O+" value="O+" />
+                    <Picker.Item label="O-" value="O-" />
+                    <Picker.Item label="AB+" value="AB+" />
+                    <Picker.Item label="AB-" value="AB-" />
+                </Picker>
+                   </View>
                     </View>
-                    <View style={{alignItems:'center'}}>
+                    <View style={{alignItems:'center',}}>
                     <TouchableOpacity onPress={onSubmit} style={styles.submitBtn} activeOpacity={0.7}>
                         <Text style={styles.submitTxt}>Submit</Text>
                     </TouchableOpacity>
@@ -110,6 +147,11 @@ elevation: 16,
         textTransform:'uppercase',
         fontWeight:'bold',
         fontSize:13
-    }
+    },
+    pickerContent: {
+    color: '#ccc',
+    borderBottomColor: '#ccc',
+    fontSize:12
+    }   
 
 })

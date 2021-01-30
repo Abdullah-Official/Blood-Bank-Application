@@ -6,14 +6,8 @@ import { PrimaryColor } from './constants/PrimaryColor';
 import Login from './screens/Login';
 import RegisterScreen from './screens/RegisterScreen';
 import HomeScreen from './screens/HomeScreen';
-import { AntDesign } from '@expo/vector-icons';
-import {auth} from './firebase'
-import { WelcomeScreenData } from './Data/WelcomeScreenData';
 import DonateForm from './screens/DonateForm';
 import BloodInfo from './screens/BloodInfo';
-import { Button } from 'react-native';
-
-
 
 const Stack = createStackNavigator();
 
@@ -29,7 +23,7 @@ export default function App({navigation}) {
 
   return (
     <NavigationContainer >
-       <Stack.Navigator screenOptions={globalScreenOptions} initialRouteName={auth.currentUser ? (HomeScreen) : (WelcomeScreenData)} >
+       <Stack.Navigator screenOptions={globalScreenOptions} >
       <Stack.Screen options={{headerShown: true}} name="Donor" component={WelcomeScreen}  />
       <Stack.Screen options={{headerShown: true}} name="Login" component={Login}  />
       <Stack.Screen options={{headerShown: true}} name="Register" component={RegisterScreen}  />

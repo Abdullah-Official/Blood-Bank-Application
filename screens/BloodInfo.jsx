@@ -1,28 +1,42 @@
-import React from 'react'
+import React, { useLayoutEffect } from 'react'
 import { SafeAreaView } from 'react-native'
 import { StyleSheet, Text, View } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { PrimaryColor } from '../constants/PrimaryColor'
 import { Fontisto } from '@expo/vector-icons';
 import { WebView } from 'react-native-webview';
 import {BloodData} from '../Data/BloodData'
+import { AntDesign } from '@expo/vector-icons';
+import {auth} from '../firebase'
+const BloodInfo = ({navigation}) => {
+    const logout = () =>{
+        auth.signOut();
+        navigation.replace("Login")
+    }
 
-const BloodInfo = () => {
+    useLayoutEffect(() =>{
+        navigation.setOptions({
+            headerTintColor: 'white',
+            headerRight: () =>(
+<TouchableOpacity onPress={logout} activeOpacity={0.8} style={{marginRight:10}}><AntDesign name="logout" size={24} color="white" style={{fontWeight:'bold'}}  /></TouchableOpacity>
+            )
+        })
+    },[])
     return (
       <ScrollView>
-            <SafeAreaView style={{flex:1}}>
+            <SafeAreaView style={{flex:1, backgroundColor:'#fff'}}>
             <View style={{alignItems:'center', marginTop:30, flexDirection:'column', flex:1}}>
                 <Text style={{color: PrimaryColor, fontWeight:'bold', fontSize:24, marginBottom:6}}>Know your Blood Group</Text>
                 <Fontisto name="blood-drop" size={26} color="red" />
             </View>
            
-            <View style={{flex:1,alignItems:'center', paddingTop:40}}>
+            <View style={{flex:1,alignItems:'center', paddingTop:40, backgroundColor:'#fff'}}>
             <Text style={{color: '#336666', opacity:0.8 ,fontWeight:'700',textAlign:'center', marginBottom:15, textTransform:'uppercase',fontSize:18}}>Watch Now</Text>
            <Text>
            <WebView  source={{ uri: "https://www.youtube.com/embed/B6dAPXpUjCE" }} style={{width: 300, height:250, resizeMode:'cover', alignItems:'center', borderRadius:10}} />;
            </Text>
             </View>
-            <View style={{flex:1}}>
+            <View style={{flex:1, backgroundColor:'#ffff'}}>
                 <View style={styles.container}>
                     <Text style={styles.headingTxt}>The ABO System</Text>
                     <Text style={styles.mainTxt}>There are 4 main blood groups defined by the ABO system:</Text>
@@ -38,10 +52,10 @@ const BloodInfo = () => {
                                 <>
                                 
                                 <View key={i} style={styles.mainConatiner}>
-                        <View style={{justifyContent:'center', alignItems:'center'}}><Text style={{color:"#fff", fontWeight:'bold', fontSize:22, textAlign:'center'}}>{v.blood}</Text></View>
+                        <View style={{justifyContent:'center', alignItems:'center'}}><Text style={{color:'#fff', fontWeight:'bold', fontSize:22, textAlign:'center'}}>{v.blood}</Text></View>
                         <View>
-                        <Text style={{fontSize:13, color:'#fff'}}>{v.give}</Text>
-                        <Text style={{fontSize:13, color:'#fff'}}>{v.recieve}</Text>
+                        <Text style={{fontSize:13, color: 'white', textAlign:'center'}}>{v.give}</Text>
+                        <Text style={{fontSize:13, color: 'white', textAlign:'center'}}>{v.recieve}</Text>
                         </View>
                     </View>    
                                 </>
@@ -84,6 +98,15 @@ const styles = StyleSheet.create({
         padding:10,
         marginBottom:10,
         borderRadius:4,
-        backgroundColor:PrimaryColor
+        backgroundColor:PrimaryColor,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 2.22,
+
+        elevation: 4,
     }
 })

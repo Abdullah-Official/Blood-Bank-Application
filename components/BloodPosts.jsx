@@ -3,19 +3,12 @@ import { StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { PrimaryColor } from '../constants/PrimaryColor'
 import {auth} from '../firebase'
-import { Fontisto } from '@expo/vector-icons';
 
 
 
 const BloodPosts = (props) => {
     console.log(auth.currentUser.photoURL)
     return (
-        // <View style={{alignItems:'center'}}>
-        //         <TouchableOpacity activeOpacity={0.7} style={styles.bloodBox}>
-        //             <Text style={styles.bloodTxt}>A+</Text>
-        //         </TouchableOpacity >
-        //     </View>
-
         <View style={{alignItems:'center'
         ,
         shadowColor: "#000",
@@ -30,21 +23,24 @@ const BloodPosts = (props) => {
         
 
         }}>
-            <View style={styles.mainBox}>
-            <View style={{alignItems:'center'}}>
+           <View style={styles.container}>
+           <View style={styles.mainBox}>
+            <View style={{alignItems:'center', justifyContent:'center'}}>
                  <TouchableOpacity activeOpacity={0.7} style={styles.bloodBox}>
                      <Text style={styles.bloodTxt}>{props.group}</Text>
                  </TouchableOpacity >
              </View>
-             <View style={{justifyContent:'center'}}><Fontisto name="blood-drop" size={32} color="red" /></View>
-             <View>
-                 <Text style={styles.infoTxt}>{props.name}</Text>
-                 <Text style={styles.infoTxt}>{props.number}</Text>
-                 <Text style={styles.infoTxt}>{props.city}</Text>
+             {/* <View style={{justifyContent:'center', alignItems:'center'}}><Fontisto name="blood-drop" size={32} color="red" /></View> */}
+             <View style={{marginTop:5,}}>
+                 <Text style={styles.infoTxt}>Name: {props.name}</Text>
+                 <Text style={styles.infoTxt}>Email: {props.email}</Text>
+                 <Text style={styles.infoTxt}>Contact: {props.number}</Text>
+                 <Text style={styles.infoTxt}>City: {props.city}</Text>
              </View>
             </View>
-        </View>
+            </View>
 
+           </View>
     )
 }
 
@@ -52,34 +48,54 @@ export default BloodPosts
 
 const styles = StyleSheet.create({
     mainBox:{
-        borderTopRightRadius:25,
-        borderWidth:1,
-        borderColor:'#181818',
-        width:'90%',
-        flexDirection:'row',
-        justifyContent:'space-between',
+        borderRadius: 10,
+        flexDirection:'column',
+        justifyContent:'space-around',
         paddingHorizontal:10,
         paddingVertical:10,
         marginVertical:4,
-        
-    }
-    ,
+    },
+    container:{
+       
+        width:'90%',
+        backgroundColor: '#fff',
+        marginBottom:20,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.22,
+        shadowRadius: 2.22,
+
+        elevation: 3,
+
+    },
     bloodBox:{
         backgroundColor:PrimaryColor,
-        width:70,
-        height:70,
-        borderRadius: 10,
+        width:100,
+        height:100,
+        borderRadius: 100,
         justifyContent:'center',
-        
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+        elevation: 10,  
+        alignSelf:'center'
         
     },
     bloodTxt:{
         color:'#fff',
-        fontSize:23,
+        fontSize:30,
         textAlign:'center',
-        fontWeight:'bold'
+        fontWeight:'bold',
+        justifyContent:'center'
     },
     infoTxt:{
-        opacity: 0.7
+        opacity: 1,
+        fontWeight:'600',
+        color:'#37474F',
+        fontSize:14.3
     }
 })
